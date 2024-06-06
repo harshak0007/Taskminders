@@ -12,6 +12,7 @@ interface ToDoItem {
 }
 
 interface ToDoState {
+	[x: string]: any;
 	toDoItems: ToDoItem[];
 	editToDoItem: ToDoItem | undefined;
 	sortValue: string;
@@ -32,7 +33,9 @@ const initialState: ToDoState = {
 };
 
 export const fetchTodos = createAsyncThunk('todos/fetchTodos', async () => {
-	const response = await axios.get('http://localhost:3000/api/todos');
+	const response = await axios.get(
+		'https://todo-app-react-redux-a5sl.onrender.com/api/todos'
+	);
 
 	return response.data;
 });
@@ -41,7 +44,7 @@ export const addTodo = createAsyncThunk(
 	'todos/addTodo',
 	async (todoItem: ToDoItem) => {
 		const response = await axios.post(
-			'http://localhost:3000/api/todos',
+			'https://todo-app-react-redux-a5sl.onrender.com/api/todos',
 			todoItem
 		);
 		return response.data;
@@ -52,7 +55,7 @@ export const editTodo = createAsyncThunk(
 	'todos/editTodo',
 	async (todoItem: ToDoItem) => {
 		const response = await axios.put(
-			`http://localhost:3000/api/todos/${todoItem.id}`,
+			`https://todo-app-react-redux-a5sl.onrender.com/api/todos/${todoItem.id}`,
 			todoItem
 		);
 
@@ -63,7 +66,9 @@ export const editTodo = createAsyncThunk(
 export const deleteTodo = createAsyncThunk(
 	'todos/deleteTodo',
 	async (id: number) => {
-		await axios.delete(`http://localhost:3000/api/todos/delete/${id}`);
+		await axios.delete(
+			`https://todo-app-react-redux-a5sl.onrender.com/api/todos/delete/${id}`
+		);
 		return id;
 	}
 );
@@ -72,7 +77,9 @@ export const deleteCollection = createAsyncThunk(
 	async (_, { getState }) => {
 		const state = getState() as ToDoState;
 		const activeCollection = state.activeCollection;
-		await axios.delete(`http://localhost:3000/api/todos/${activeCollection}`);
+		await axios.delete(
+			`https://todo-app-react-redux-a5sl.onrender.com/api/todos/${activeCollection}`
+		);
 		return activeCollection;
 	}
 );
@@ -80,11 +87,9 @@ export const handleSort = createAsyncThunk(
 	'todos/handleSort',
 	async (_, { getState }) => {
 		const state = getState() as ToDoState;
-		console.log(state.todos);
 		const sortValue = state.todos.sortValue;
-		console.log(sortValue);
 		const response = await axios.get(
-			`http://localhost:3000/api/todos/sort/${sortValue}`
+			`https://todo-app-react-redux-a5sl.onrender.com/api/todos/sort/${sortValue}`
 		);
 		return response.data;
 	}
@@ -122,7 +127,10 @@ export const todoSlice = createSlice({
 			console.log('checked');
 			const todo = action.payload;
 			const updatedTodo = { ...todo, isCompleted: !todo.isCompleted };
-			axios.patch(`http://localhost:3000/api/todos/${todo.id}`, updatedTodo);
+			axios.patch(
+				`https://todo-app-react-redux-a5sl.onrender.com/api/todos/${todo.id}`,
+				updatedTodo
+			);
 			state.toDoItems = state.toDoItems.map(item =>
 				item.id === todo.id ? updatedTodo : item
 			);
@@ -133,7 +141,7 @@ export const todoSlice = createSlice({
 			state.toDoItems = action.payload;
 
 			let maxIdCounter = 0;
-			const collectionsSet = new Set(); // Using Set to collect unique collections
+			const collectionsSet = new Set<string>(); // Using Set to collect unique collections
 
 			action.payload.forEach((item: ToDoItem) => {
 				maxIdCounter = Math.max(maxIdCounter, item.id); // Find maximum idCounter
