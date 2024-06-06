@@ -22,7 +22,7 @@ Make sure you have the following installed:
 Clone the project
 
 ```bash
-  git clone https://github.com/harshak0007/Todo-App-React-Redux.git ./
+  git clone https://github.com/harshak0007/Taskminders.git ./
 ```
 
 Install dependencies
